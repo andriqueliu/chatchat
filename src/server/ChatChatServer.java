@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class ChatChatServer {
 	
+	// !!! Also need to remove usernames when they log off TODO
+	
 	private int port;
 	private Set<String> usernames = new HashSet<String>();
 	private ArrayList<PrintWriter> serverOuts = new ArrayList<PrintWriter>();
@@ -52,6 +54,4 @@ public class ChatChatServer {
 	public void addServerOut(PrintWriter serverOut) {
 		this.serverOuts.add(serverOut);
 	}
-	
-	// !!! Also need to remove usernames when they log off TODO
 }
