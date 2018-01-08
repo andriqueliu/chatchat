@@ -46,10 +46,12 @@ public class ChatChatClient {
 				"IP Address Required!",
 				JOptionPane.PLAIN_MESSAGE);
 		
-		try (
-				Socket socket = new Socket(ipAddress, port);
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+		// TODO: TEMPORARY... MANAGE RESOURCES BETTER
+		
+		try {
+			Socket socket = new Socket(ipAddress, port);
+			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			this.out = new PrintWriter(socket.getOutputStream(), true);
 			
 			while (true) {
 				String str = in.readLine();
@@ -75,6 +77,8 @@ public class ChatChatClient {
 					chatArea.append(str + "\n");
 				}
 			}
+		} finally {
+			
 		}
 	}
 	
