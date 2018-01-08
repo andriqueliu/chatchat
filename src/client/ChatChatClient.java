@@ -2,11 +2,16 @@ package client;
 
 import java.awt.FlowLayout;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -14,6 +19,8 @@ import javax.swing.JTextField;
 public class ChatChatClient {
 	
 	// TODO: error handling everywhere! In all classes!
+	
+	private int port;
 	
 	private JFrame chatWindow = new JFrame("Chat Application");
 	private JTextArea chatArea = new JTextArea(22, 40);
@@ -26,12 +33,49 @@ public class ChatChatClient {
 	
 	private JLabel nameLabel = new JLabel("          ");
 	
-	public ChatChatClient() {
+	public ChatChatClient(int port) {
+		this.port = port;
+		
 		startGui();
 	}
 	
-	public void startChat() {
+	public void startChat() throws UnknownHostException, IOException {
+		String ipAddress = JOptionPane.showInputDialog(
+				chatWindow,
+				"Enter IP Address: ",
+				"IP Address Required!",
+				JOptionPane.PLAIN_MESSAGE);
 		
+		try (
+				Socket socket = new Socket(ipAddress, port);
+				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+			
+			while (true) {
+				String str = in.readLine();
+				
+				if (str.equals("NAMEREQUIRED")) {
+					String name = JOptionPane.showInputDialog(
+							chatWindow,
+							"Enter a unique name:",
+							"Name required!",
+							JOptionPane.PLAIN_MESSAGE);
+					out.println(name);
+				} else if (str.equals("NAMEEXISTS")) {
+					String name = JOptionPane.showInputDialog(
+							chatWindow,
+							"Enter another name:",
+							"Name already exists!",
+							JOptionPane.WARNING_MESSAGE);
+					out.println(name);
+				} else if (str.startsWith("NAMEACCEPTED")) {
+					textField.setEditable(true);
+					nameLabel.setText("You are logged in as: " + str.substring(12));
+				} else {
+					chatArea.append(str + "\n");
+				}
+			}
+		}
 	}
 	
 	private void startGui() {
