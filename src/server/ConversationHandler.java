@@ -44,7 +44,7 @@ public class ConversationHandler extends Thread {
 				// log...
 				
 				for (PrintWriter serverOut : server.getServerOuts()) {
-					serverOut.println(username + ":" + message);
+					serverOut.println(username + ": " + message);
 				}
 			}
 		} catch (IOException e) {
