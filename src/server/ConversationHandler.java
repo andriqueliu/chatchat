@@ -34,7 +34,7 @@ public class ConversationHandler extends Thread {
 				out.println("NAMEEXISTS");
 				username = in.readLine();
 			}
-			out.println("NAMEACCEPTED");
+			out.println("NAMEACCEPTED" + username); // TODO... fix?
 			
 			server.addServerOut(out);
 			
