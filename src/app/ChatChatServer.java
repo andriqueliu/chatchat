@@ -10,17 +10,18 @@ import java.util.Set;
 
 public class ChatChatServer {
 	
+	private int port;
 	private Set<String> usernames = new HashSet<String>();
 	private ArrayList<PrintWriter> serverOuts = new ArrayList<PrintWriter>();
 	
-	public ChatChatServer() {
-		
+	public ChatChatServer(int port) {
+		this.port = port;
 	}
 	
 	public void startServer() {
 		System.out.println("Waiting for clients...");
 		
-		try (ServerSocket serverSocket = new ServerSocket(1337)) {
+		try (ServerSocket serverSocket = new ServerSocket(this.port)) {
 			
 			while (true) {
 				Socket socket = serverSocket.accept();
@@ -52,5 +53,5 @@ public class ChatChatServer {
 		this.serverOuts.add(serverOut);
 	}
 	
-	// !!! Also need to remove usernames when they log off
+	// !!! Also need to remove usernames when they log off TODO
 }
