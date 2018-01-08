@@ -50,7 +50,19 @@ public class ChatChatClient {
 		this.textField.setEditable(false);
 		this.chatArea.setEditable(false);
 		
-//		this.sendButton.addActionListener(new Listener());
-//		this.textField.addActionListener(new Listener());
+		this.sendButton.addActionListener(new SendListener(this));
+		this.textField.addActionListener(new SendListener(this));
+	}
+	
+	public String getTextFieldText() {
+		return this.textField.getText();
+	}
+	
+	public void clearTextField() {
+		this.textField.setText("");
+	}
+	
+	public void sendMessage(String message) {
+		this.out.println(message);
 	}
 }
