@@ -12,7 +12,6 @@ public class ConversationHandler extends Thread {
 	private ChatChatServer server;
 	private Socket socket;
 	private String username;
-	private Set<String> usernames;
 	
 	public ConversationHandler(ChatChatServer server, Socket socket, Set<String> usernames) {
 		this.server = server;
@@ -21,32 +20,31 @@ public class ConversationHandler extends Thread {
 		
 		// write to logs...
 		
-		this.usernames = usernames;
 	}
 	
 	@Override
 	public void run() {
 		try (
-				BufferedReader handlerIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintWriter handlerOut = new PrintWriter(socket.getOutputStream(), true)) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 			
-			handlerOut.println("NAMEREQUIRED");
-			username = handlerIn.readLine();
+			out.println("NAMEREQUIRED");
+			username = in.readLine();
 			while (!server.storeUsername(username)) {
-				handlerOut.println("NAMEEXISTS");
-				username = handlerIn.readLine();
+				out.println("NAMEEXISTS");
+				username = in.readLine();
 			}
-			handlerOut.println("NAMEACCEPTED");
+			out.println("NAMEACCEPTED");
 			
-			server.addServerOut(handlerOut);
+			server.addServerOut(out);
 			
 			while (true) {
-				String message = handlerIn.readLine();
+				String message = in.readLine();
 				
 				// log...
 				
-				for (PrintWriter out : server.getServerOuts()) {
-					out.println(username + ":" + message);
+				for (PrintWriter serverOut : server.getServerOuts()) {
+					serverOut.println(username + ":" + message);
 				}
 			}
 		} catch (IOException e) {
